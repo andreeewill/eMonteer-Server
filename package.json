@@ -1,7 +1,7 @@
 {
   "name": "repair-backend",
   "version": "1.0.0",
-  "description": "Vehicle repair service backend",
+  "description": "eMonteer (Emergency Vehicle Repairment App)",
   "main": "index.js",
   "scripts": {
     "start": "node lib/index.js",
