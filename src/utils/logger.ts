@@ -1,5 +1,32 @@
 import winston, { format, transports } from 'winston';
+import expressWinston from 'express-winston';
 
+interface PrintfParams {
+  level: string;
+  message: string;
+  label?: string;
+  timestamp?: string;
+  meta?: {
+    req?: {
+      url: string;
+      headers: {
+        host: string;
+        'user-agent': string;
+        accept: string;
+      };
+      method: string;
+      httpVersion: string;
+      originalUrl: string;
+      query: object;
+    };
+    res?: {
+      statusCode: number;
+    };
+    responseTime?: number;
+  };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
+}
 class Logger {
   private static logger: winston.Logger;
 
@@ -21,13 +48,54 @@ class Logger {
     return Logger.logger;
   }
 
-  private static formatLogMessage() {
-    return format.printf(({ level, message, label, timestamp }) => {
-      return `${timestamp} [${
-        label || process.env.APP_NAME
-      }] ${level}: ${message}`;
+  public static logHttpRequest() {
+    return expressWinston.logger({
+      winstonInstance: Logger.getInstance(),
     });
+  }
+
+  private static formatLogMessage() {
+    return format.printf(
+      ({
+        level,
+        message,
+        label,
+        timestamp,
+        ...other
+      }: PrintfParams): string => {
+        const printKeys = [
+          'httpVersion',
+          'statusCode',
+          'responseTime',
+          'headers',
+        ];
+        let details = '';
+        // Winston express will populate meta prop
+        if (other.meta) {
+          Object.entries(other.meta).forEach(([key, value]) => {
+            if (typeof value === 'object') {
+              Object.entries(value).forEach(([key, value]) => {
+                if (typeof value === 'object' && printKeys.includes(key)) {
+                  details += `${key}:${JSON.stringify(value)}  `;
+                } else {
+                  if (printKeys.includes(key)) details += `${key}:${value}  `;
+                }
+              });
+            } else {
+              if (printKeys.includes(key)) details += `${key}:${value}  `;
+            }
+          });
+        }
+
+        return `${timestamp} [${
+          label || process.env.APP_NAME
+        }] ${level}: ${message} ${details}`;
+      }
+    );
   }
 }
 
-export default Logger.getInstance();
+const loggerInstance = Logger.getInstance();
+const loggerHTTP = Logger.logHttpRequest();
+
+export { loggerInstance as default, loggerHTTP };
