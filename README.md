@@ -24,6 +24,15 @@ And ... done. What you have to do next is wait for the mechanic to arrive. Don't
 > ✅ Automatically find the best partners for you ( top rated, nearest, best price )\
 > ✅ Browse through all workshop partners details in your city and give them rating/review
 
+## 🐱‍💻 Tech Stack + Libraries
+
+- Javscript ( Node JS )
+- Typescript
+- Express
+- PostgreSQL ( Prisma ORM )
+- Jest
+- Babel ( transpiler )
+
 ## ▶️ Start and Contribute
 
 ### Start :
@@ -38,7 +47,7 @@ And ... done. What you have to do next is wait for the mechanic to arrive. Don't
    ```bash
    npm install
    ```
-3. Create .env file
+3. Create and configure .env file
    ```bash
    cp .env.example .env
    ```
@@ -51,10 +60,16 @@ And ... done. What you have to do next is wait for the mechanic to arrive. Don't
 
 1. Create feat branch
    ```bash
-   git checkout -b feat/<your feature>
+   git checkout -b feat/<feature-name>
    ```
 2. Make some changes
 3. Test your changes
 4. Push the branch and open a pull request
+
+> ⚠️ **Notes** :
+>
+> - Make sure NodeJS + npm are installed in your machine ( LTS version )
+> - Use PostgreSQL as the database, otherwise it may give unexpected behaviour
+> - Do not change any configuration file without permission, and `--no-verify` command is **strictly prohibited !!**
 
 ## 🗒️ API Documentation
