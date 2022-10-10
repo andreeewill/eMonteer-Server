@@ -18,6 +18,7 @@
   },
   "plugins": ["@typescript-eslint", "prettier"],
   "rules": {
+    "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/object-curly-spacing": "off",
     "@typescript-eslint/quotes": ["error", "single"],
     "@typescript-eslint/no-unused-vars": ["error"],

@@ -1,6 +1,6 @@
 import winston, { format, transports } from 'winston';
+import TelegramLogger from 'winston-telegram';
 import expressWinston from 'express-winston';
-
 interface PrintfParams {
   level: string;
   message: string;
@@ -32,13 +32,31 @@ class Logger {
 
   public static getInstance() {
     if (!Logger.logger) {
+      const loggerTransports: any = [new transports.Console()];
+      if (process.env.TELEGRAM_CHAT_ID && process.env.TELEGRAM_TOKEN) {
+        loggerTransports.push(
+          new TelegramLogger({
+            chatId: parseInt(process.env.TELEGRAM_CHAT_ID),
+            token: process.env.TELEGRAM_TOKEN,
+            level: 'info',
+            formatMessage: (options, info) => {
+              const symbols = Object.getOwnPropertySymbols(info);
+              const messageIndex = symbols.findIndex(
+                (symbol) => symbol.description === 'message'
+              );
+              return info[symbols[`${messageIndex}`]];
+            },
+          })
+        );
+      }
       Logger.logger = winston.createLogger({
         format: format.combine(
-          format.colorize(),
+          // format.colorize(),
+          format.prettyPrint(),
           format.timestamp({ format: 'YY-MM-DD HH:mm:ss' }),
           Logger.formatLogMessage()
         ),
-        transports: [new transports.Console()],
+        transports: loggerTransports,
         exceptionHandlers: [
           new transports.Console(),
           new transports.File({ filename: 'exception.log' }),
@@ -51,6 +69,7 @@ class Logger {
   public static logHttpRequest() {
     return expressWinston.logger({
       winstonInstance: Logger.getInstance(),
+      statusLevels: true,
     });
   }
 
@@ -94,6 +113,18 @@ class Logger {
     );
   }
 }
+
+// Logger.getInstance().add(
+//   new TelegramLogger({
+//     chatId: 794213769,
+//     token: '5798890378:AAGRseF0FcQbV_uTFOjeVkIX3K2UErC4SXg',
+//     formatMessage: (options, info) => {
+//       console.log('info', info);
+//       console.log('opt', options);
+//       return 'ok';
+//     },
+//   })
+// );
 
 const loggerInstance = Logger.getInstance();
 const loggerHTTP = Logger.logHttpRequest();

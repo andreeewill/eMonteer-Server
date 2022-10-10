@@ -1,11 +1,9 @@
+import 'dotenv/config';
 import express from 'express';
-import dotenv from 'dotenv';
 import cors from 'cors';
 
 import logger, { loggerHTTP } from './utils/logger';
 import AuthRouter from './component/auth/route';
-
-dotenv.config();
 
 const app = express();
 
