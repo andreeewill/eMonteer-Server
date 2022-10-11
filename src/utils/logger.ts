@@ -114,18 +114,6 @@ class Logger {
   }
 }
 
-// Logger.getInstance().add(
-//   new TelegramLogger({
-//     chatId: 794213769,
-//     token: '5798890378:AAGRseF0FcQbV_uTFOjeVkIX3K2UErC4SXg',
-//     formatMessage: (options, info) => {
-//       console.log('info', info);
-//       console.log('opt', options);
-//       return 'ok';
-//     },
-//   })
-// );
-
 const loggerInstance = Logger.getInstance();
 const loggerHTTP = Logger.logHttpRequest();
 
