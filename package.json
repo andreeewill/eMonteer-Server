@@ -58,11 +58,5 @@
       "npm run format"
     ]
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "pre-push": "npm run tsc && npm run lint"
-    }
-  },
   "private": true
 }
