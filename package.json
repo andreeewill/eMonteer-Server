@@ -9,11 +9,13 @@
     "prebuild": "rimraf lib/",
     "tsc": "tsc",
     "build": "babel src --out-dir lib --extensions .ts,.tsx",
-    "lint": "eslint --fix \"src/**/*.{ts,tsx,json}",
+    "format": "prettier --write src/**/*.{ts,tsx,json}",
+    "lint": "eslint \"src/**/*.{ts,tsx,json}\"",
     "watch:babel": "babel --watch src --out-dir lib --extensions .ts,.tsx",
     "test": "jest --passWithNoTests --detectOpenHandles --forceExit",
     "cover": "jest --coverage --passWithNoTests --detectOpenHandles --forceExit",
-    "watch": "jest --watch"
+    "watch": "jest --watch",
+    "prepare": "husky install"
   },
   "author": "Andre William",
   "license": "ISC",
@@ -33,7 +35,7 @@
     "eslint-plugin-jest": "^27.1.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-security": "^1.5.0",
-    "husky": "^8.0.1",
+    "husky": "^8.0.0",
     "jest": "^28.1.3",
     "lint-staged": "^13.0.3",
     "nodemon": "^2.0.19",
@@ -50,5 +52,17 @@
     "express-winston": "^4.2.0",
     "winston": "^3.8.2",
     "winston-telegram": "^2.6.0"
-  }
+  },
+  "lint-staged": {
+    "*.{ts,tsx,json,md}": [
+      "npm run format"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "npm run tsc && npm run lint"
+    }
+  },
+  "private": true
 }
