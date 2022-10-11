@@ -3,5 +3,6 @@
 
 npx lint-staged -q
 npm run tsc
+npm run lint
 npm run test
 npm run cover
