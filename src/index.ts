@@ -17,7 +17,7 @@ app.use(loggerHTTP);
 app.use('/auth', AuthRouter);
 
 app.listen(process.env.PORT, () => {
-  logger.info(`Listening on port ${process.env.PORT}`, {
+  logger.info(`Listening on port ${process.env.PORT || 8000}`, {
     label: 'Server',
   });
 });

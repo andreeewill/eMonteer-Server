@@ -1,6 +1,8 @@
+/* eslint-disable */
 import winston, { format, transports } from 'winston';
 import TelegramLogger from 'winston-telegram';
 import expressWinston from 'express-winston';
+
 interface PrintfParams {
   level: string;
   message: string;
@@ -32,13 +34,13 @@ class Logger {
 
   public static getInstance() {
     if (!Logger.logger) {
-      const loggerTransports: any = [new transports.Console()];
+      const loggerTransports: any[] = [new transports.Console()];
       if (process.env.TELEGRAM_CHAT_ID && process.env.TELEGRAM_TOKEN) {
         loggerTransports.push(
           new TelegramLogger({
-            chatId: parseInt(process.env.TELEGRAM_CHAT_ID),
+            chatId: parseInt(process.env.TELEGRAM_CHAT_ID, 10),
             token: process.env.TELEGRAM_TOKEN,
-            level: 'info',
+            level: 'error',
             formatMessage: (options, info) => {
               const symbols = Object.getOwnPropertySymbols(info);
               const messageIndex = symbols.findIndex(
@@ -96,18 +98,18 @@ class Logger {
               Object.entries(value).forEach(([key, value]) => {
                 if (typeof value === 'object' && printKeys.includes(key)) {
                   details += `${key}:${JSON.stringify(value)}  `;
-                } else {
-                  if (printKeys.includes(key)) details += `${key}:${value}  `;
+                } else if (printKeys.includes(key)) {
+                  details += `${key}:${value}  `;
                 }
               });
-            } else {
-              if (printKeys.includes(key)) details += `${key}:${value}  `;
+            } else if (printKeys.includes(key)) {
+              details += `${key}:${value}  `;
             }
           });
         }
 
         return `${timestamp} [${
-          label || process.env.APP_NAME
+          label || (process.env.APP_NAME as string)
         }] ${level}: ${message} ${details}`;
       }
     );
