@@ -9,7 +9,7 @@
     "prebuild": "rimraf lib/",
     "tsc": "tsc",
     "build": "babel src --out-dir lib --extensions .ts,.tsx",
-    "format": "prettier --write src/**/*.{ts,tsx,json}",
+    "format": "prettier --write src/**/*.{ts}",
     "lint": "eslint \"src/**/*.{ts,tsx,json}\"",
     "watch:babel": "babel --watch src --out-dir lib --extensions .ts,.tsx",
     "test": "jest --passWithNoTests --detectOpenHandles --forceExit",
@@ -31,7 +31,6 @@
     "@typescript-eslint/eslint-plugin": "^5.30.6",
     "@typescript-eslint/parser": "^5.30.6",
     "eslint": "^8.2.0",
-    "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.25.2",
@@ -43,12 +42,14 @@
     "lint-staged": "^13.0.3",
     "nodemon": "^2.0.19",
     "prettier": "^2.7.1",
+    "prisma": "^4.8.0",
     "rimraf": "^3.0.2",
     "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",
     "typescript": "^4.7.4"
   },
   "dependencies": {
+    "@prisma/client": "^4.8.0",
     "axios": "^0.27.2",
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
@@ -62,5 +63,8 @@
       "npm run format"
     ]
   },
-  "private": true
+  "private": true,
+  "prisma": {
+    "schema": "src/database/prisma/schema.prisma"
+  }
 }

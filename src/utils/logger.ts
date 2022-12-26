@@ -1,4 +1,3 @@
-/* eslint-disable */
 import winston, { format, transports } from 'winston';
 import TelegramLogger from 'winston-telegram';
 import expressWinston from 'express-winston';
@@ -26,9 +25,9 @@ interface PrintfParams {
     };
     responseTime?: number;
   };
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 }
+
 class Logger {
   private static logger: winston.Logger;
 
@@ -46,6 +45,7 @@ class Logger {
               const messageIndex = symbols.findIndex(
                 (symbol) => symbol.description === 'message'
               );
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return
               return info[symbols[`${messageIndex}`]];
             },
           })
@@ -93,22 +93,25 @@ class Logger {
         let details = '';
         // Winston express will populate meta prop
         if (other.meta) {
-          Object.entries(other.meta).forEach(([key, value]) => {
-            if (typeof value === 'object') {
-              Object.entries(value).forEach(([key, value]) => {
+          Object.entries(other.meta).forEach(([keyP, valueP]) => {
+            if (typeof valueP === 'object') {
+              Object.entries(valueP).forEach(([key, value]) => {
                 if (typeof value === 'object' && printKeys.includes(key)) {
                   details += `${key}:${JSON.stringify(value)}  `;
-                } else if (printKeys.includes(key)) {
+                } else if (
+                  typeof value === 'string' &&
+                  printKeys.includes(key)
+                ) {
                   details += `${key}:${value}  `;
                 }
               });
-            } else if (printKeys.includes(key)) {
-              details += `${key}:${value}  `;
+            } else if (printKeys.includes(keyP)) {
+              details += `${keyP}:${valueP}  `;
             }
           });
         }
 
-        return `${timestamp} [${
+        return `${timestamp || 'Invalid timestamp'} [${
           label || (process.env.APP_NAME as string)
         }] ${level}: ${message} ${details}`;
       }
@@ -119,4 +122,6 @@ class Logger {
 const loggerInstance = Logger.getInstance();
 const loggerHTTP = Logger.logHttpRequest();
 
-export { loggerInstance as default, loggerHTTP };
+export default loggerInstance;
+
+export { loggerHTTP };

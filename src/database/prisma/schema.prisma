@@ -1,0 +1,113 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CUSTOMER
+  MECHANIC
+  OWNER
+  ADMIN
+}
+
+enum AccountStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+enum Vehicle {
+  ALL
+  CAR
+  MOTOR
+}
+
+model User {
+  id             String        @id @default(uuid())
+  name           String
+  email          String        @unique
+  contact_number String?
+  password       String
+  address        String?
+  photo_url      String?
+  created_at     DateTime      @default(now())
+  updated_at     DateTime      @updatedAt
+  role           Role          @default(CUSTOMER)
+  account_status AccountStatus @default(ACTIVE)
+  user           UserDetail?
+
+  @@index([email])
+}
+
+model UserDetail {
+  vendor_id    String  @id
+  identity_url String?
+  user         User?   @relation(fields: [user_id], references: [id])
+  user_id      String? @unique
+}
+
+model Garage {
+  id             String  @id @default(uuid())
+  name           String
+  address        String
+  photo_url      String?
+  avg_rating     Float?
+  open_hour      String
+  open_day       String
+  description    String?
+  contact_number String
+  speciality     Vehicle @default(ALL)
+  is_available   Boolean
+  latitude       Float?
+  longitude      Float?
+  total_mech     Int?
+}
+
+model Towing {
+  id             String @id @default(uuid())
+  name           String
+  contact_number String
+  address        String
+  latitute       Float
+  longitude      Float
+  cost_per_km    Float
+  open_hours     String
+}
+
+model Chat {
+  id                 String    @id @default(uuid())
+  last_message       String?
+  last_date_time     DateTime?
+  last_signal_source Boolean?
+}
+
+model Message {
+  id            String   @id @default(uuid())
+  message       String
+  created_at    DateTime @default(now())
+  signal_source Boolean?
+}
+
+model CostList {
+  id       String  @id @default(uuid())
+  quantity Int     @default(1)
+  price    Decimal
+}
+
+model Order {
+  id               String    @id @default(uuid())
+  trans_start      DateTime  @default(now())
+  trans_end        DateTime?
+  pickup_latitude  Float
+  pickup_longitude Float
+  pickup_address   String
+  service_cost     Decimal?
+  customer_paid    Decimal?
+  rating           Float?
+}
