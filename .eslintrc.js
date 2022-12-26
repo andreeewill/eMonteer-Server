@@ -14,8 +14,6 @@ module.exports = {
     'plugin:import/typescript',
     'plugin:import/errors',
     'plugin:import/warnings',
-    'plugin:import/javascript',
-    'plugin:import/typescript',
     'prettier',
   ],
   parser: '@typescript-eslint/parser',
@@ -43,11 +41,6 @@ module.exports = {
         tsx: 'never',
       },
     ],
-    'import/resolver': {
-      node: {
-        extensions: ['.js', '.jsx', '.ts', '.tsx'],
-      },
-    },
   },
   ignorePatterns: ['.eslintrc.js', 'babel.config.js'],
 };
