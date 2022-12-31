@@ -40,7 +40,10 @@ model User {
   updated_at     DateTime      @updatedAt
   role           Role          @default(CUSTOMER)
   account_status AccountStatus @default(ACTIVE)
-  user           UserDetail?
+  // Relation
+  userDetail     UserDetail?
+  chat           Chat[]
+  order          Order[]
 
   @@index([email])
 }
@@ -48,12 +51,17 @@ model User {
 model UserDetail {
   vendor_id    String  @id
   identity_url String?
+  is_available Boolean @default(true)
+  chat         Chat[] // for mechanics
+  order        Order[]
+  garage       Garage? // Only exists when userDetail role is owner
+  // Relation
   user         User?   @relation(fields: [user_id], references: [id])
   user_id      String? @unique
 }
 
 model Garage {
-  id             String  @id @default(uuid())
+  id             String      @id @default(uuid())
   name           String
   address        String
   photo_url      String?
@@ -62,15 +70,19 @@ model Garage {
   open_day       String
   description    String?
   contact_number String
-  speciality     Vehicle @default(ALL)
-  is_available   Boolean
+  speciality     Vehicle     @default(ALL)
+  is_available   Boolean     @default(true)
   latitude       Float?
   longitude      Float?
   total_mech     Int?
+  order          Order[]
+  // Relation
+  userDetail     UserDetail? @relation(fields: [user_detail_id], references: [vendor_id])
+  user_detail_id String?     @unique
 }
 
 model Towing {
-  id             String @id @default(uuid())
+  id             String  @id @default(uuid())
   name           String
   contact_number String
   address        String
@@ -78,13 +90,21 @@ model Towing {
   longitude      Float
   cost_per_km    Float
   open_hours     String
+  order          Order[]
 }
 
 model Chat {
-  id                 String    @id @default(uuid())
+  id                 String      @id @default(uuid())
   last_message       String?
   last_date_time     DateTime?
   last_signal_source Boolean?
+  order              Order?
+  message            Message[]
+  // Relation
+  user               User?       @relation(fields: [user_id], references: [id])
+  user_id            String?
+  mechanic           UserDetail? @relation(fields: [mechanic_id], references: [vendor_id])
+  mechanic_id        String?
 }
 
 model Message {
@@ -92,17 +112,22 @@ model Message {
   message       String
   created_at    DateTime @default(now())
   signal_source Boolean?
+  chat          Chat?    @relation(fields: [chat_id], references: [id])
+  chat_id       String?
 }
 
 model CostList {
   id       String  @id @default(uuid())
   quantity Int     @default(1)
   price    Decimal
+  // Relation
+  order    Order?  @relation(fields: [order_id], references: [id])
+  order_id String?
 }
 
 model Order {
-  id               String    @id @default(uuid())
-  trans_start      DateTime  @default(now())
+  id               String      @id @default(uuid())
+  trans_start      DateTime    @default(now())
   trans_end        DateTime?
   pickup_latitude  Float
   pickup_longitude Float
@@ -110,4 +135,16 @@ model Order {
   service_cost     Decimal?
   customer_paid    Decimal?
   rating           Float?
+  cost_list        CostList[]
+  //Relation
+  user             User?       @relation(fields: [user_id], references: [id])
+  user_id          String?
+  mechanic         UserDetail? @relation(fields: [mechanic_id], references: [vendor_id])
+  mechanic_id      String?
+  garage           Garage?     @relation(fields: [garage_Id], references: [id])
+  garage_Id        String?
+  chat             Chat?       @relation(fields: [chat_id], references: [id])
+  chat_id          String?     @unique
+  towing           Towing?     @relation(fields: [towing_id], references: [id])
+  towing_id        String?
 }
