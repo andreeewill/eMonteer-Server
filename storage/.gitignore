@@ -1,0 +1,4 @@
+# This is useful for putting files that you don't want to commit,
+# E.g: The app public/private key, client PKI, etc.
+*
+!.gitignore

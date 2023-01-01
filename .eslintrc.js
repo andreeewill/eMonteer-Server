@@ -29,6 +29,12 @@ module.exports = {
     '@typescript-eslint/object-curly-spacing': 'off',
     '@typescript-eslint/quotes': ['error', 'single'],
     '@typescript-eslint/no-unused-vars': ['error'],
+    '@typescript-eslint/no-misused-promises': 'off',
+    '@typescript-eslint/no-shadow': ['error'],
+    'no-shadow': 'off',
+    'import/prefer-default-export': 'off',
+    'prefer-destructuring': 'off',
+    camelcase: 'off',
     'no-underscore-dangle': 'warn',
     'prettier/prettier': ['error', { endOfLine: 'auto' }],
     'import/extensions': [

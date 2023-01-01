@@ -47,11 +47,23 @@ And ... done. What you have to do next is wait for the mechanic to arrive. Don't
    ```bash
    npm install
    ```
-3. Create and configure .env file
+3. Generate app's private and public key using `openssl`
+
+   ```bash
+   openssl genrsa -des3 -out private.pem 2048
+   openssl rsa -in private.pem -outform PEM -pubout -out public.pem
+   openssl rsa -in private.pem -out plain_private.pem
+
+   // Move plain_private.pem and public.pem to ./storage
+   ```
+
+4. Create and configure .env file
+
    ```bash
    cp .env.example .env
    ```
-4. Start dev server
+
+5. Start dev server
    ```bash
    npm run start:dev
    ```
