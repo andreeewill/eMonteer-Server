@@ -1,6 +1,8 @@
 import { ValidationChain, validationResult } from 'express-validator';
 import { Request, Response, NextFunction } from 'express';
 
+import { HttpError } from './error';
+
 //* Error Handling
 export const validateAll =
   (validations: ValidationChain[]) =>
@@ -13,9 +15,12 @@ export const validateAll =
     if (errors.isEmpty()) {
       return next();
     }
-    //! Error Ocurred
-    return res.status(400).json({
-      success: false,
-      error: errors.array({ onlyFirstError: false }),
-    });
+
+    const error = new HttpError(
+      'Request validation error',
+      'UNPROCESSABLE_ENTITY'
+    );
+    error.setValidatorError(errors.array({ onlyFirstError: false }));
+
+    return next(error);
   };

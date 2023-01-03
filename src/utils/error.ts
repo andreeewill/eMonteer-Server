@@ -2,10 +2,20 @@ import { HttpStatusCode } from '../common/statusCode';
 
 type StatusType = keyof typeof HttpStatusCode;
 
+interface ExpressError {
+  value?: any;
+  msg: string;
+  param: string;
+  location?: string;
+  nestedErrors?: any;
+}
+
 class HttpError extends Error {
   public readonly statusType;
 
   public readonly statusCode;
+
+  public fields: { [k: string]: string[] } = {};
 
   constructor(message: string, statusType: StatusType) {
     super(message);
@@ -14,8 +24,16 @@ class HttpError extends Error {
     this.statusCode = HttpStatusCode[`${statusType}`];
     Error.captureStackTrace(this);
   }
+
+  setValidatorError(errors: ExpressError[]) {
+    this.fields = errors.reduce<{ [k: string]: string[] }>((acc, val) => {
+      if (!acc[val.param]) {
+        return { ...acc, [val.param]: [val.msg] };
+      }
+      acc[val.param].push(val.msg);
+      return acc;
+    }, {});
+  }
 }
 
-const a = new HttpError('skldjfdasd', 'BAD_REQUEST');
-
-console.log(a.statusCode, a.message);
+export { HttpError };

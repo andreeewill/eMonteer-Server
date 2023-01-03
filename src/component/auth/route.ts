@@ -26,7 +26,6 @@ route.post(
     body('password')
       .exists()
       .withMessage('Password must be filled')
-      .isString()
       .isLength({ min: 5, max: 255 })
       .withMessage('Password must be at least 5 chars long')
       .matches(/^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[a-z]).*$/)

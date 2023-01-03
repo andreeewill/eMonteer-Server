@@ -30,6 +30,7 @@ module.exports = {
     '@typescript-eslint/quotes': ['error', 'single'],
     '@typescript-eslint/no-unused-vars': ['error'],
     '@typescript-eslint/no-misused-promises': 'off',
+    '@typescript-eslint/no-unsafe-assignment': 'off',
     '@typescript-eslint/no-shadow': ['error'],
     'no-shadow': 'off',
     'import/prefer-default-export': 'off',

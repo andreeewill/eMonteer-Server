@@ -1,21 +1,37 @@
 import type { Response } from 'express';
-// import bcrypt from 'bcrypt';
-
 import type { User } from '@prisma/client';
-// import logger from '../../utils/logger';
-import DB from '../../database/db.database';
+import bcrypt from 'bcrypt';
+
 import type { CustomRequest } from '../../common/basic.types';
+// import logger from '../../utils/logger';
+import ResProvider from '../../provider/httpResponse.provider';
+import DB from '../../database/db.database';
 
-export const registerBasic = (req: CustomRequest<User>, res: Response) => {
+export const registerBasic = async (
+  req: CustomRequest<User>,
+  res: Response
+) => {
   const { email, name, contact_number } = req.body;
-  const password = req.body.password;
+  const password = await bcrypt.hash(
+    req.body.password,
+    parseInt(process.env.HASH_ROUNDS || '10', 10)
+  );
 
-  const result = DB.user.create({
+  const result = await DB.user.create({
     data: { email, name, password, contact_number },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+    },
   });
 
-  return res.status(200).json({
-    success: true,
+  ResProvider(res, {
+    options: {
+      message: 'User created !',
+      statusCode: 201,
+    },
     data: result,
   });
 };
