@@ -1,5 +1,6 @@
 /* eslint-disable security/detect-unsafe-regex */
 import express from 'express';
+import 'express-async-errors';
 import { body } from 'express-validator';
 
 import DB from '../../database/db.database';
@@ -45,5 +46,14 @@ route.post(
   ]),
   AuthController.registerBasic
 );
+
+// route.post(
+//   '/login/basic',
+//   validateAll([
+//     body('email').exists().withMessage('Email must be filled'),
+//     body('password').exists().withMessage('Password must be filled'),
+//   ]),
+//   AuthController.loginBasic
+// );
 
 export default route;

@@ -21,13 +21,10 @@ app.use('/auth', AuthRouter);
 /**
  * Express default error handler
  */
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  if (err instanceof HttpError) {
-    return ResProvider(res, { err });
-  }
-  // Unhandled error
-  return next(err);
-});
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+app.use((err: HttpError, req: Request, res: Response, next: NextFunction) =>
+  ResProvider(res, { err })
+);
 
 app.listen(process.env.PORT, () => {
   logger.info(`Listening on port ${process.env.PORT || 8000}`, {

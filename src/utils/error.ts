@@ -17,6 +17,8 @@ class HttpError extends Error {
 
   public fields: { [k: string]: string[] } = {};
 
+  public databaseCode?: number;
+
   constructor(message: string, statusType: StatusType) {
     super(message);
     Object.setPrototypeOf(this, new.target.prototype);
@@ -33,6 +35,10 @@ class HttpError extends Error {
       acc[val.param].push(val.msg);
       return acc;
     }, {});
+  }
+
+  setDatabaseCode(code: number) {
+    this.databaseCode = code;
   }
 }
 

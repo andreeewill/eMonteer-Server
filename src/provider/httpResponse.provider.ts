@@ -1,6 +1,5 @@
 import type { Response } from 'express';
 
-import logger from '../utils/logger';
 import { HttpStatusCode } from '../common/statusCode';
 import { HttpError } from '../utils/error';
 
@@ -21,21 +20,22 @@ interface ResponseDetails {
 const responseProvider = (res: Response, details: ResponseDetails) => {
   const { err, options, data } = details;
 
-  let statusCode = options?.statusCode || 200;
+  let statusCode;
   const baseResponse = {
     success: true,
     message: options?.message || 'Success',
     errors: {},
     data: undefined,
+    code: 0,
   };
 
   if (err) {
     baseResponse.success = false;
     statusCode = err.statusCode || 500;
 
-    switch (err.statusCode) {
+    switch (statusCode) {
       case 422: {
-        baseResponse.message = 'Not a Valid Data';
+        baseResponse.message = err.message;
         baseResponse.errors = err.fields;
         break;
       }
@@ -43,20 +43,21 @@ const responseProvider = (res: Response, details: ResponseDetails) => {
       case 500: {
         baseResponse.message =
           'Internal server error, please contact help desk';
-
+        if (err.databaseCode) {
+          baseResponse.code = err.databaseCode;
+        }
         break;
       }
 
       default: {
         // Unhandled error condition, please add error code handler when getting this message
         baseResponse.message = 'Unknown error, please contact help desk';
-        logger.info('Unhandled Error', err);
       }
     }
-    logger.error(`ERROR: something went wrong ${err.message}`, {
-      label: 'HTTP',
-    });
+    // eslint-disable-next-line no-console
+    console.log('ERROR', err);
   } else {
+    statusCode = options?.statusCode || 200;
     baseResponse.data = data;
   }
 

@@ -2,6 +2,7 @@ import type { Response } from 'express';
 import type { User } from '@prisma/client';
 import bcrypt from 'bcrypt';
 
+import { HttpError } from '../../utils/error';
 import type { CustomRequest } from '../../common/basic.types';
 // import logger from '../../utils/logger';
 import ResProvider from '../../provider/httpResponse.provider';
@@ -17,15 +18,22 @@ export const registerBasic = async (
     parseInt(process.env.HASH_ROUNDS || '10', 10)
   );
 
-  const result = await DB.user.create({
-    data: { email, name, password, contact_number },
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      role: true,
-    },
-  });
+  let result;
+  try {
+    result = await DB.user.create({
+      data: { email, name, password, contact_number },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+      },
+    });
+  } catch (error: any) {
+    const err = new HttpError('Database Error', 'INTERNAL_SERVER_ERROR');
+    err.setDatabaseCode(error.code as number);
+    throw err;
+  }
 
   ResProvider(res, {
     options: {
@@ -35,3 +43,7 @@ export const registerBasic = async (
     data: result,
   });
 };
+
+// export const loginBasic = async (req: CustomRequest<User>, res: Response) => {
+//   const { email, password } = req.body;
+// };
