@@ -17,7 +17,7 @@ class HttpError extends Error {
 
   public fields: { [k: string]: string[] } = {};
 
-  public databaseCode?: number;
+  public databaseCode?: string;
 
   constructor(message: string, statusType: StatusType) {
     super(message);
@@ -37,7 +37,7 @@ class HttpError extends Error {
     }, {});
   }
 
-  setDatabaseCode(code: number) {
+  setDatabaseCode(code: string) {
     this.databaseCode = code;
   }
 }

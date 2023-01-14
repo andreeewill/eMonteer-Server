@@ -3,7 +3,6 @@ import express from 'express';
 import 'express-async-errors';
 import { body } from 'express-validator';
 
-import DB from '../../database/db.database';
 import { validateAll } from '../../utils/validation';
 import * as AuthController from './controller';
 
@@ -19,11 +18,7 @@ route.post(
       .matches(
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
       )
-      .withMessage('Please enter a valid email address')
-      .custom(async (value: string) => {
-        const user = await DB.user.findUnique({ where: { email: value } });
-        if (user) throw new Error('User already exists');
-      }),
+      .withMessage('Please enter a valid email address'),
     body('password')
       .exists()
       .withMessage('Password must be filled')
@@ -47,13 +42,13 @@ route.post(
   AuthController.registerBasic
 );
 
-// route.post(
-//   '/login/basic',
-//   validateAll([
-//     body('email').exists().withMessage('Email must be filled'),
-//     body('password').exists().withMessage('Password must be filled'),
-//   ]),
-//   AuthController.loginBasic
-// );
+route.post(
+  '/login/basic',
+  validateAll([
+    body('email').exists().withMessage('Email must be filled'),
+    body('password').exists().withMessage('Password must be filled'),
+  ]),
+  AuthController.loginBasic
+);
 
 export default route;

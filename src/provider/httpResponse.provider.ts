@@ -26,7 +26,7 @@ const responseProvider = (res: Response, details: ResponseDetails) => {
     message: options?.message || 'Success',
     errors: {},
     data: undefined,
-    code: 0,
+    code: '',
   };
 
   if (err) {
@@ -34,6 +34,11 @@ const responseProvider = (res: Response, details: ResponseDetails) => {
     statusCode = err.statusCode || 500;
 
     switch (statusCode) {
+      case 400:
+      case 401: {
+        baseResponse.message = err.message;
+        break;
+      }
       case 422: {
         baseResponse.message = err.message;
         baseResponse.errors = err.fields;
@@ -55,7 +60,7 @@ const responseProvider = (res: Response, details: ResponseDetails) => {
       }
     }
     // eslint-disable-next-line no-console
-    console.log('ERROR', err);
+    console.info('Error occured', err);
   } else {
     statusCode = options?.statusCode || 200;
     baseResponse.data = data;

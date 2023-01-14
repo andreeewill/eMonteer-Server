@@ -1,49 +1,50 @@
 import type { Response } from 'express';
 import type { User } from '@prisma/client';
-import bcrypt from 'bcrypt';
 
-import { HttpError } from '../../utils/error';
 import type { CustomRequest } from '../../common/basic.types';
-// import logger from '../../utils/logger';
 import ResProvider from '../../provider/httpResponse.provider';
-import DB from '../../database/db.database';
+import { createOneUser, findUserByEmail } from '../../service/user.service';
+import { HttpError } from '../../utils/error';
+import { comparePassword } from '../../utils/crypto';
+import { createAuthToken } from '../../utils/token';
 
 export const registerBasic = async (
   req: CustomRequest<User>,
   res: Response
 ) => {
-  const { email, name, contact_number } = req.body;
-  const password = await bcrypt.hash(
-    req.body.password,
-    parseInt(process.env.HASH_ROUNDS || '10', 10)
-  );
+  const isExists = await findUserByEmail(req.body.email);
 
-  let result;
-  try {
-    result = await DB.user.create({
-      data: { email, name, password, contact_number },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-      },
-    });
-  } catch (error: any) {
-    const err = new HttpError('Database Error', 'INTERNAL_SERVER_ERROR');
-    err.setDatabaseCode(error.code as number);
-    throw err;
-  }
+  if (isExists) throw new HttpError('User already exists', 'BAD_REQUEST');
+
+  const user = await createOneUser(req.body);
 
   ResProvider(res, {
     options: {
       message: 'User created !',
       statusCode: 201,
     },
-    data: result,
+    data: user,
   });
 };
 
-// export const loginBasic = async (req: CustomRequest<User>, res: Response) => {
-//   const { email, password } = req.body;
-// };
+export const loginBasic = async (req: CustomRequest<User>, res: Response) => {
+  const { email, password } = req.body;
+
+  const user = await findUserByEmail(email);
+
+  if (!user || !comparePassword(password, user.password))
+    throw new HttpError('Email or password is incorrect', 'UNAUTHORIZED');
+
+  const { jweToken, csrfToken } = await createAuthToken(user);
+  res.cookie('authorization', `Bearer ${jweToken}`);
+
+  ResProvider(res, {
+    options: {
+      message: 'Logic success!',
+      statusCode: 200,
+    },
+    data: {
+      csrfToken,
+    },
+  });
+};
