@@ -3,12 +3,16 @@ import type { User } from '@prisma/client';
 
 import type { CustomRequest } from '../../common/basic.types';
 import ResProvider from '../../provider/httpResponse.provider';
-import { createOneUser, findUserByEmail } from '../../service/user.service';
+import {
+  createOneCust,
+  createOneOwner,
+  findUserByEmail,
+} from '../../service/user.service';
 import { HttpError } from '../../utils/error';
 import { comparePassword } from '../../utils/crypto';
 import { createAuthToken } from '../../utils/token';
 
-export const registerBasic = async (
+export const registerCustBasic = async (
   req: CustomRequest<User>,
   res: Response
 ) => {
@@ -16,14 +20,35 @@ export const registerBasic = async (
 
   if (isExists) throw new HttpError('User already exists', 'BAD_REQUEST');
 
-  const user = await createOneUser(req.body);
+  const user = await createOneCust(req.body);
 
   ResProvider(res, {
     options: {
-      message: 'User created !',
+      message: 'User created! (customer)',
       statusCode: 201,
     },
     data: user,
+  });
+};
+
+export const registerOwnerBasic = async (
+  req: CustomRequest<User>,
+  res: Response
+) => {
+  const isExists = await findUserByEmail(req.body.email);
+
+  if (isExists) throw new HttpError('User already exists', 'BAD_REQUEST');
+  if (!req.file)
+    throw new HttpError('identity is not a file type', 'BAD_REQUEST');
+
+  const owner = await createOneOwner(req.body, req.file);
+
+  ResProvider(res, {
+    options: {
+      message: 'User created! (owner)',
+      statusCode: 201,
+    },
+    data: owner,
   });
 };
 
