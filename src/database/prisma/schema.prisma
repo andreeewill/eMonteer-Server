@@ -66,7 +66,9 @@ model Garage {
   address        String
   photo_url      String?
   avg_rating     Float?
+  // Hour + minute in ISO 8601 format (ex : 16:47 - 16:47)
   open_hour      String
+  // `day` to `day` (ex: monday to sunday)
   open_day       String
   description    String?
   contact_number String

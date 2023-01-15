@@ -10,6 +10,7 @@ import logger, { loggerHTTP } from './utils/logger';
 // Router
 import AuthRouter from './component/auth/route';
 import UserRouter from './component/user/route';
+import GarageRouter from './component/garage/route';
 
 const app = express();
 
@@ -23,7 +24,8 @@ app.use(loggerHTTP);
 
 // Routes
 app.use('/auth', AuthRouter);
-app.use('/user', UserRouter);
+app.use('/api/user', UserRouter);
+app.use('/api/garage', GarageRouter);
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((err: HttpError, req: Request, res: Response, next: NextFunction) =>

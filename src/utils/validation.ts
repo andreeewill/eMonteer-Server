@@ -1,5 +1,6 @@
 import { ValidationChain, validationResult } from 'express-validator';
 import { Request, Response, NextFunction } from 'express';
+import { Role } from '@prisma/client';
 
 import { HttpError } from './error';
 
@@ -24,3 +25,14 @@ export const validateAll =
 
     return next(error);
   };
+
+export const validateUserRole = (
+  userRole: Role,
+  role?: Role | Role[]
+): boolean => {
+  if (!role) return true;
+
+  const allowedRoles = Array.isArray(role) ? role : [role];
+
+  return allowedRoles.includes(userRole);
+};

@@ -1,9 +1,11 @@
 import { Response, NextFunction } from 'express';
+import { Role } from '@prisma/client';
 
 import { findUserByEmail } from '../service/user.service';
 import { CustomRequest } from '../common/basic.types';
 import { HttpError } from '../utils/error';
 import { verifyAuthToken } from '../utils/token';
+import { validateUserRole } from '../utils/validation';
 import { createHMACSignature } from '../utils/crypto';
 
 /**
@@ -14,7 +16,8 @@ import { createHMACSignature } from '../utils/crypto';
  * @returns
  */
 const authorize =
-  () => async (req: CustomRequest, res: Response, next: NextFunction) => {
+  (role?: Role | Role[]) =>
+  async (req: CustomRequest, res: Response, next: NextFunction) => {
     if (!req.cookies.authorization) {
       throw new HttpError('Unauthorized user', 'UNAUTHORIZED');
     }
@@ -24,6 +27,7 @@ const authorize =
       'Bearer ',
       ''
     );
+
     if (
       !req.headers.csrf ||
       req.headers.csrf !== createHMACSignature(jwtToken)
@@ -32,6 +36,12 @@ const authorize =
     }
 
     const tokenResult = await verifyAuthToken(jwtToken);
+
+    // Check if user is permitted to use this endpoint
+    const isAllowed = validateUserRole(tokenResult.role, role);
+
+    if (!isAllowed)
+      throw new HttpError('Not allowed to perform this action', 'UNAUTHORIZED');
 
     req.user = await findUserByEmail(tokenResult.email);
 
