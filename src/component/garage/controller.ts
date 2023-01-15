@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import { Garage } from '@prisma/client';
 
-import { CustomRequest } from '../../common/basic.types';
+import { CustomAuthRequest } from '../../common/basic.types';
 import { addOwnerGarage } from '../../service/garage.service';
 import ResProvider from '../../provider/httpResponse.provider';
 
@@ -10,8 +10,11 @@ import ResProvider from '../../provider/httpResponse.provider';
  * @param req Custom express request
  * @param res Express response
  */
-export const addGarage = async (req: CustomRequest<Garage>, res: Response) => {
-  const result = await addOwnerGarage(req.body, req.user!.id!);
+export const addGarage = async (
+  req: CustomAuthRequest<Garage>,
+  res: Response
+) => {
+  const result = await addOwnerGarage(req.body, req.user.id);
 
   ResProvider(res, {
     options: {
