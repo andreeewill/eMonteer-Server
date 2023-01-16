@@ -64,7 +64,10 @@ export const createOneOwner = async (
 
 export const findUserByEmail = async (email: string) => {
   try {
-    return await DB.user.findUnique({ where: { email } });
+    return await DB.user.findUnique({
+      where: { email },
+      include: { userDetail: true },
+    });
   } catch (error: any) {
     const err = new HttpError('Database Error', 'INTERNAL_SERVER_ERROR');
     err.setDatabaseCode(error.code as string);

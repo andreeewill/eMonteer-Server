@@ -1,5 +1,6 @@
 import { Response } from 'express';
-import { CustomRequest } from '../../common/basic.types';
+import { User, UserDetail } from '@prisma/client';
+import { CustomRequest, CustomAuthRequest } from '../../common/basic.types';
 
 import ResProvider from '../../provider/httpResponse.provider';
 
@@ -9,3 +10,8 @@ export const getUserInfo = (req: CustomRequest, res: Response) => {
     data: req.user,
   });
 };
+
+export const editUserProfile = (
+  req: CustomAuthRequest<User & UserDetail>,
+  res: Response
+) => {};

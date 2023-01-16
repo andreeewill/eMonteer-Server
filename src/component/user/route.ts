@@ -7,6 +7,18 @@ import * as UserController from './controller';
 
 const route = express.Router();
 
+/**
+ * Route to get current user info (all fields in User table)
+ */
 route.get('/me', authorize(), UserController.getUserInfo);
+
+/**
+ * Route to edit user profile (customer, owner, and mechanics)
+ */
+route.put(
+  '/:id',
+  authorize(['CUSTOMER', 'MECHANIC', 'OWNER']),
+  UserController.editUserProfile
+);
 
 export default route;
