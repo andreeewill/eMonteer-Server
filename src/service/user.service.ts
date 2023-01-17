@@ -3,6 +3,7 @@ import { User } from '@prisma/client';
 import DB from '../database/db.database';
 import { HttpError } from '../utils/error';
 import { encryptPassword } from '../utils/crypto';
+import { generateVendorId } from '../utils/vendor';
 
 export const createOneCust = async (payload: User) => {
   const { email, name, contact_number } = payload;
@@ -40,7 +41,12 @@ export const createOneOwner = async (
         password: hashedPassword,
         address,
         role: 'OWNER',
-        userDetail: { create: { identity_url: file.path } },
+        userDetail: {
+          create: {
+            vendor_id: generateVendorId('OWNER'),
+            identity_url: file.path,
+          },
+        },
       },
       select: {
         id: true,

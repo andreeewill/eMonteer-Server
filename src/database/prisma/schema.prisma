@@ -49,19 +49,21 @@ model User {
 }
 
 model UserDetail {
-  vendor_id    String  @id @default(uuid())
-  identity_url String?
-  is_available Boolean @default(true)
-  chat         Chat[] // for mechanics
-  order        Order[]
-  garage       Garage? // Only exists when userDetail role is owner
+  vendor_id          String  @id @default(uuid())
+  identity_url       String?
+  is_available       Boolean @default(true)
+  chat               Chat[] // for mechanics
+  order              Order[]
+  garage             Garage? // Only exists when userDetail role is owner
   // Relation
-  user         User?   @relation(fields: [user_id], references: [id])
-  user_id      String? @unique
+  user               User?   @relation(fields: [user_id], references: [id])
+  user_id            String? @unique
+  mechanic_garage    Garage? @relation(name: "mechanic_garage", fields: [mechanic_garage_id], references: [id])
+  mechanic_garage_id String?
 }
 
 model Garage {
-  id             String      @id @default(uuid())
+  id             String       @id @default(uuid())
   name           String
   address        String
   photo_url      String?
@@ -72,15 +74,16 @@ model Garage {
   open_day       String
   description    String?
   contact_number String
-  speciality     Vehicle     @default(ALL)
-  is_available   Boolean     @default(true)
+  speciality     Vehicle      @default(ALL)
+  is_available   Boolean      @default(true)
   latitude       Float?
   longitude      Float?
   total_mech     Int?
   order          Order[]
+  mechanics      UserDetail[] @relation(name: "mechanic_garage")
   // Relation
-  userDetail     UserDetail? @relation(fields: [user_detail_id], references: [vendor_id])
-  user_detail_id String?     @unique
+  userDetail     UserDetail?  @relation(fields: [user_detail_id], references: [vendor_id])
+  user_detail_id String?      @unique
 }
 
 model Towing {

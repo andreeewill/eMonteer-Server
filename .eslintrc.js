@@ -31,6 +31,7 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': ['error'],
     '@typescript-eslint/no-misused-promises': 'off',
     '@typescript-eslint/no-unsafe-assignment': 'off',
+    '@typescript-eslint/restrict-template-expressions': 'off',
     '@typescript-eslint/no-unsafe-member-access': 'off',
     '@typescript-eslint/no-unsafe-call': 'off',
     '@typescript-eslint/no-unsafe-argument': 'off',

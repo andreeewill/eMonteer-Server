@@ -19,7 +19,7 @@ export const addOwnerGarage = async (payload: Garage, userId: string) => {
         latitude: payload.latitude,
         longitude: payload.longitude,
         speciality: payload.speciality,
-        contact_number: payload.speciality,
+        contact_number: payload.contact_number,
         open_day: payload.open_day,
         open_hour: payload.open_hour,
         userDetail: {

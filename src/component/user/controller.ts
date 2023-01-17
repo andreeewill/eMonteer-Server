@@ -11,6 +11,8 @@ export const getUserInfo = (req: CustomRequest, res: Response) => {
   });
 };
 
+export const addOneMechanic = (req: CustomRequest, res: Response) => {};
+
 export const editUserProfile = (
   req: CustomAuthRequest<User & UserDetail>,
   res: Response
