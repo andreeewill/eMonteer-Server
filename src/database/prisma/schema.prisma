@@ -41,9 +41,9 @@ model User {
   role           Role          @default(CUSTOMER)
   account_status AccountStatus @default(ACTIVE)
   // Relation
-  userDetail     UserDetail?
-  chat           Chat[]
-  order          Order[]
+  userDetail     UserDetail? // user has one userDetail
+  chat           Chat[] // user have many chat room
+  order          Order[] // user can have many order
 
   @@index([email])
 }
@@ -52,13 +52,13 @@ model UserDetail {
   vendor_id          String  @id @default(uuid())
   identity_url       String?
   is_available       Boolean @default(true)
-  chat               Chat[] // for mechanics
-  order              Order[]
-  garage             Garage? // Only exists when userDetail role is owner
+  chat               Chat[] // mechanics have many chat
+  order              Order[] // mechanics can handle many order
+  garage             Garage? // owner has one garage
   // Relation
-  user               User?   @relation(fields: [user_id], references: [id])
+  user               User?   @relation(fields: [user_id], references: [id]) // userDetail belongs to one user
   user_id            String? @unique
-  mechanic_garage    Garage? @relation(name: "mechanic_garage", fields: [mechanic_garage_id], references: [id])
+  mechanic_garage    Garage? @relation(name: "mechanic_garage", fields: [mechanic_garage_id], references: [id]) // mechanics belongs to 1 garage
   mechanic_garage_id String?
 }
 
@@ -79,10 +79,10 @@ model Garage {
   latitude       Float?
   longitude      Float?
   total_mech     Int?
-  order          Order[]
-  mechanics      UserDetail[] @relation(name: "mechanic_garage")
+  order          Order[] // garage may have multiple order
+  mechanics      UserDetail[] @relation(name: "mechanic_garage") // garage has multiple mechanics
   // Relation
-  userDetail     UserDetail?  @relation(fields: [user_detail_id], references: [vendor_id])
+  userDetail     UserDetail?  @relation(fields: [user_detail_id], references: [vendor_id]) // garage belongs to one owner
   user_detail_id String?      @unique
 }
 
@@ -103,12 +103,12 @@ model Chat {
   last_message       String?
   last_date_time     DateTime?
   last_signal_source Boolean?
-  order              Order?
-  message            Message[]
+  order              Order? // each order have one chat room
+  message            Message[] // chat may have multiple message
   // Relation
-  user               User?       @relation(fields: [user_id], references: [id])
+  user               User?       @relation(fields: [user_id], references: [id]) // chat belongs to one user
   user_id            String?
-  mechanic           UserDetail? @relation(fields: [mechanic_id], references: [vendor_id])
+  mechanic           UserDetail? @relation(fields: [mechanic_id], references: [vendor_id]) // chat belongs to one mechanic
   mechanic_id        String?
 }
 
@@ -117,7 +117,7 @@ model Message {
   message       String
   created_at    DateTime @default(now())
   signal_source Boolean?
-  chat          Chat?    @relation(fields: [chat_id], references: [id])
+  chat          Chat?    @relation(fields: [chat_id], references: [id]) // chat may have many message
   chat_id       String?
 }
 
@@ -126,7 +126,7 @@ model CostList {
   quantity Int     @default(1)
   price    Decimal
   // Relation
-  order    Order?  @relation(fields: [order_id], references: [id])
+  order    Order?  @relation(fields: [order_id], references: [id]) // order may have many costlist
   order_id String?
 }
 

@@ -3,7 +3,25 @@ import { Garage } from '@prisma/client';
 import DB from '../database/db.database';
 import { HttpError } from '../utils/error';
 
-export const addOwnerGarage = async (payload: Garage, userId: string) => {
+export const getGarageById = async (garageId: string) => {
+  try {
+    const result = await DB.garage.findUnique({
+      where: { id: garageId },
+      include: { userDetail: true },
+    });
+
+    return result;
+  } catch (error: any) {
+    const err = new HttpError(
+      `Database Error: ${error.message}`,
+      'INTERNAL_SERVER_ERROR'
+    );
+    err.setDatabaseCode(error.code as string);
+    throw err;
+  }
+};
+
+export const addOneGarage = async (payload: Garage, userId: string) => {
   try {
     // get owner vendor detail (user detail)
     const ownerDetail = await DB.userDetail.findFirst({
@@ -30,7 +48,10 @@ export const addOwnerGarage = async (payload: Garage, userId: string) => {
       },
     });
   } catch (error: any) {
-    const err = new HttpError('Database Error', 'INTERNAL_SERVER_ERROR');
+    const err = new HttpError(
+      `Database Error: ${error.message}`,
+      'INTERNAL_SERVER_ERROR'
+    );
     err.setDatabaseCode(error.code as string);
     throw err;
   }

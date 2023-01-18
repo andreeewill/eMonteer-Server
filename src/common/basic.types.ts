@@ -7,6 +7,6 @@ export interface CustomRequest<T = any> extends Request {
 }
 
 export interface CustomAuthRequest<T = any> extends Request {
-  body: T;
+  body: T | any;
   user: User;
 }

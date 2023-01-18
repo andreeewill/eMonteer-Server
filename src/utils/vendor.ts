@@ -1,4 +1,4 @@
-import uuid from 'uuid';
+import uniqid from 'uniqid';
 import moment from 'moment';
 import { Role } from '@prisma/client';
 
@@ -11,7 +11,7 @@ import { Role } from '@prisma/client';
  */
 
 export const generateVendorId = (role: Role) => {
-  const uuidv4 = uuid.v4();
+  const uuidv4 = uniqid();
 
   const prefix = role === 'OWNER' ? 'OWN' : 'MEC';
   const vendorUuid = uuidv4.substring(uuidv4.length - 5);
