@@ -32,6 +32,10 @@ export const createOneCust = async (payload: User) => {
   const { email, name, contact_number } = payload;
   const hashedPassword = await encryptPassword(payload.password);
 
+  const isExists = await findUserByEmail(payload.email);
+
+  if (isExists) throw new HttpError('User already exists', 'BAD_REQUEST');
+
   try {
     return await DB.user.create({
       data: { email, name, password: hashedPassword, contact_number },
@@ -62,6 +66,9 @@ export const createOneOwner = async (
   const { email, name, contact_number, address } = payload;
   const hashedPassword = await encryptPassword(payload.password);
   const vendorId = generateVendorId('OWNER');
+  const isExists = await findUserByEmail(payload.email);
+
+  if (isExists) throw new HttpError('User already exists', 'BAD_REQUEST');
 
   try {
     return await DB.user.create({
@@ -114,11 +121,15 @@ export const createOneMechanic = async (
   const hashedPassword = await encryptPassword(payload.password);
   const vendorId = generateVendorId('MECHANIC');
 
-  const isExists = await getGarageById(garageId);
+  const isGarageExists = await getGarageById(garageId);
 
-  if (!isExists) {
+  if (!isGarageExists) {
     throw new HttpError('Garage does not exists!', 'BAD_REQUEST');
   }
+
+  const isMechExists = await findUserByEmail(payload.email);
+
+  if (isMechExists) throw new HttpError('User already exists', 'BAD_REQUEST');
 
   try {
     return await DB.userDetail.create({
@@ -160,7 +171,10 @@ export const createOneMechanic = async (
       },
     });
   } catch (error: any) {
-    const err = new HttpError('Database Error', 'INTERNAL_SERVER_ERROR');
+    const err = new HttpError(
+      `Database Error: ${error.message}`,
+      'INTERNAL_SERVER_ERROR'
+    );
     err.setDatabaseCode(error.code as string);
     throw err;
   }

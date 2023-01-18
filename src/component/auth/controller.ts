@@ -16,10 +16,6 @@ export const registerCustBasic = async (
   req: CustomRequest<User>,
   res: Response
 ) => {
-  const isExists = await findUserByEmail(req.body.email);
-
-  if (isExists) throw new HttpError('User already exists', 'BAD_REQUEST');
-
   const user = await createOneCust(req.body);
 
   ResProvider(res, {
