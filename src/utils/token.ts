@@ -12,7 +12,10 @@ interface UserToken {
   exp: string;
 }
 
-const TOKEN_MAX_AGE = 604800000; // a week
+// Temporary set token expiry for 1 year (development)
+// 604800000 (1 week)
+// 31536000000 (1 year)
+const TOKEN_MAX_AGE = 31536000000;
 
 export const createAuthToken = async (user: User) => {
   const { id, name, email, role } = user;

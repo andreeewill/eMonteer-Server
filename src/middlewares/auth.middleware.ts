@@ -32,7 +32,8 @@ const authorize =
       !req.headers.csrf ||
       req.headers.csrf !== createHMACSignature(jwtToken)
     ) {
-      throw new HttpError('Invalid CSRF token', 'BAD_REQUEST');
+      // Disable csrf validation for development
+      // throw new HttpError('Invalid CSRF token', 'BAD_REQUEST');
     }
 
     const tokenResult = await verifyAuthToken(jwtToken);
