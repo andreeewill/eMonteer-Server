@@ -82,8 +82,8 @@ model Garage {
   order          Order[] // garage may have multiple order
   mechanics      UserDetail[] @relation(name: "mechanic_garage") // garage has multiple mechanics
   // Relation
-  userDetail     UserDetail?  @relation(fields: [user_detail_id], references: [vendor_id]) // garage belongs to one owner
-  user_detail_id String?      @unique
+  owner          UserDetail?  @relation(fields: [owner_id], references: [vendor_id]) // garage belongs to one owner
+  owner_id       String?      @unique
 }
 
 model Towing {

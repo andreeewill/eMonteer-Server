@@ -7,7 +7,7 @@ export const getGarageById = async (garageId: string) => {
   try {
     const result = await DB.garage.findUnique({
       where: { id: garageId },
-      include: { userDetail: true },
+      include: { owner: true, mechanics: true },
     });
 
     return result;
@@ -40,7 +40,7 @@ export const addOneGarage = async (payload: Garage, userId: string) => {
         contact_number: payload.contact_number,
         open_day: payload.open_day,
         open_hour: payload.open_hour,
-        userDetail: {
+        owner: {
           connect: {
             vendor_id: ownerDetail?.vendor_id,
           },
