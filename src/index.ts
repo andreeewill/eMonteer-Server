@@ -1,11 +1,13 @@
 import 'dotenv/config';
 import express, { NextFunction, Request, Response } from 'express';
-import cookieParser from 'cookie-parser';
+import http from 'http';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
-import { HttpError } from './utils/error';
+import SocketServer from './provider/socket.provider';
 import ResProvider from './provider/httpResponse.provider';
 import logger, { loggerHTTP } from './utils/logger';
+import { HttpError } from './utils/error';
 
 // Router
 import AuthRouter from './component/auth/route';
@@ -13,6 +15,10 @@ import UserRouter from './component/user/route';
 import GarageRouter from './component/garage/route';
 
 const app = express();
+const server = http.createServer(app);
+
+// Initialize socket server
+SocketServer.initializeServer(server);
 
 // Middlewares and Parser
 app.use(cors());
@@ -32,7 +38,7 @@ app.use((err: HttpError, req: Request, res: Response, next: NextFunction) =>
   ResProvider(res, { err })
 );
 
-app.listen(process.env.PORT, () => {
+server.listen(process.env.PORT, () => {
   logger.info(`Listening on port ${process.env.PORT || 8000}`, {
     label: 'Server',
   });
