@@ -4,7 +4,7 @@ import http from 'http';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
-import SocketServer from './provider/socket.provider';
+import { socketInstance as SocketServer } from './provider/socket.provider';
 import ResProvider from './provider/httpResponse.provider';
 import logger, { loggerHTTP } from './utils/logger';
 import { HttpError } from './utils/error';

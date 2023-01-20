@@ -15,4 +15,6 @@ class SocketIO {
 
 const socketInstance = new SocketIO();
 
-export default socketInstance;
+export { socketInstance };
+
+export default socketInstance.io;
