@@ -13,6 +13,7 @@ import { HttpError } from './utils/error';
 import AuthRouter from './component/auth/route';
 import UserRouter from './component/user/route';
 import GarageRouter from './component/garage/route';
+import OrderRouter from './component/order/route';
 
 const app = express();
 const server = http.createServer(app);
@@ -32,6 +33,7 @@ app.use(loggerHTTP);
 app.use('/auth', AuthRouter);
 app.use('/api/user', UserRouter);
 app.use('/api/garage', GarageRouter);
+app.use('/api/order', OrderRouter);
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((err: HttpError, req: Request, res: Response, next: NextFunction) =>

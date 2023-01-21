@@ -21,6 +21,23 @@ export const getGarageById = async (garageId: string) => {
   }
 };
 
+export const getAllGarageLocation = async () => {
+  try {
+    const result = await DB.garage.findMany({
+      select: { id: true, name: true, latitude: true, longitude: true },
+    });
+
+    return result;
+  } catch (error: any) {
+    const err = new HttpError(
+      `Database Error: ${error.message}`,
+      'INTERNAL_SERVER_ERROR'
+    );
+    err.setDatabaseCode(error.code as string);
+    throw err;
+  }
+};
+
 export const addOneGarage = async (payload: Garage, userId: string) => {
   try {
     // get owner vendor detail (user detail)
