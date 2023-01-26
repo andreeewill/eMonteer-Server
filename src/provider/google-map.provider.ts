@@ -46,7 +46,7 @@ export const findNearestGarage = async (pickupLocation: Location) => {
 
         return acc;
       },
-      { distance: 0 }
+      { distance: 0, garageMapAddress: '', garageId: '' }
     );
 
     return result;

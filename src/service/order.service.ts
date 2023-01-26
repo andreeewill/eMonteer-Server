@@ -1,10 +1,11 @@
-import { Order } from '@prisma/client';
+// import { Order } from '@prisma/client';
 
 import DB from '../database/db.database';
+import { OrderPayload } from '../common/basic.types';
 import { HttpError } from '../utils/error';
 
 export const createOneOrder = async (
-  payload: Order,
+  payload: OrderPayload,
   userId: string,
   mechVendorId: string,
   garageId: string

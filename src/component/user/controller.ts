@@ -14,7 +14,7 @@ export const getUserInfo = (req: CustomRequest, res: Response) => {
 };
 
 export const addOneMechanic = async (
-  req: CustomAuthRequest<User & UserDetail>,
+  req: CustomAuthRequest<User & UserDetail & { garage_id: string }>,
   res: Response
 ) => {
   if (!req.file)
