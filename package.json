@@ -52,11 +52,13 @@
     "rimraf": "^3.0.2",
     "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^4.7.4"
   },
   "dependencies": {
     "@googlemaps/google-maps-services-js": "^3.3.26",
     "@prisma/client": "^4.8.0",
+    "@socket.io/admin-ui": "^0.5.1",
     "axios": "^0.27.2",
     "bcrypt": "^5.1.0",
     "cloudinary": "^1.33.0",

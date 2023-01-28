@@ -26,6 +26,7 @@ export const createOrder = async (
   for (const [, socket] of io.of('/mechanics').sockets) {
     if (socket.data.garageId === garageId) {
       socket.join(socketId);
+      return;
     }
   }
 
